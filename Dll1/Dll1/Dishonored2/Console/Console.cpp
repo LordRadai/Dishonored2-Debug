@@ -38,7 +38,7 @@ namespace D2
                 output += input[i];
             }
 
-            output += "\033[0m"; // always reset at the end
+            output += "\033[0m";
             return output;
         }
 
