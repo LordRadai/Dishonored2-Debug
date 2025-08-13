@@ -8,7 +8,7 @@ namespace DH2
 {
 	std::string ConvertD2ConsoleMessageToStandardFmt(const char* message);
 
-	namespace Console
+	namespace idConsole
 	{
 		extern int* g_bAllowDebugCommands;
 

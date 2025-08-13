@@ -1,8 +1,8 @@
-#include "Console.h"
+#include "idConsole.h"
 
 namespace DH2
 {
-	namespace Console
+	namespace idConsole
 	{
 		int* g_bAllowDebugCommands;
 
@@ -52,7 +52,7 @@ namespace DH2
             va_end(args);
 
             std::string colored = ConvertD2ConsoleMessageToStandardFmt(buffer);
-            printf("%s", colored.c_str());
+            printf("%s\n", colored.c_str());
             fflush(stdout);
         }
 	}

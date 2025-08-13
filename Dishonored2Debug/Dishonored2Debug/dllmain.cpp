@@ -2,7 +2,7 @@
 #include <thread>
 #include <iostream>
 #include "Dishonored2/globals.h"
-#include "Dishonored2/Console/Console.h"
+#include "Dishonored2/idConsole/idConsole.h"
 #include "Dishonored2/idCmdSystemLocal/idCmdSystemLocal.h"
 #include "Hooks/D2Hooks.h"
 
@@ -57,8 +57,6 @@ void StartTerminalConsole()
     SetConsoleTitle(L"Debug Console");
     EnableAnsiColors();
 
-	std::cout << "Debug Console Started.\n";
-
     g_TerminalThread = std::thread(TerminalInputThread);
 }
 
@@ -102,10 +100,10 @@ bool Begin(uint64_t qModuleHandle) {
 
 	D2Hooks::InitializeHooks();
 
-	DH2::Console::g_bAllowDebugCommands = (int*)(MODULE_ADDR+0x32cd1c8);
+	DH2::idConsole::g_bAllowDebugCommands = (int*)(MODULE_ADDR+0x32cd1c8);
 	g_idCmdSystemLocal = *(DH2::idCmdSystemLocal**)(MODULE_ADDR+0x228bae0);
 
-    *DH2::Console::g_bAllowDebugCommands = 1;
+    *DH2::idConsole::g_bAllowDebugCommands = 1;
     
     return true;
 };
