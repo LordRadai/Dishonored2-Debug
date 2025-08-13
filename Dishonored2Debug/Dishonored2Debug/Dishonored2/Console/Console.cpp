@@ -1,6 +1,6 @@
 #include "Console.h"
 
-namespace D2
+namespace DH2
 {
 	namespace Console
 	{

@@ -147,7 +147,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Dishonored2\Console\Console.h" />
+    <ClInclude Include="Dishonored2\DH2Call.h" />
     <ClInclude Include="Dishonored2\globals.h" />
+    <ClInclude Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Hooks\D2Hooks.h" />
     <ClInclude Include="kiero\kiero.h" />
@@ -162,6 +164,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dishonored2\Console\Console.cpp" />
+    <ClCompile Include="Dishonored2\idCmdSystemLocal\idCommandSystemLocal.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hooks\D2Hooks.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />

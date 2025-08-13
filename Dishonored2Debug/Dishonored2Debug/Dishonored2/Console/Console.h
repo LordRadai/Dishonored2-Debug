@@ -4,7 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace D2
+namespace DH2
 {
 	std::string ConvertD2ConsoleMessageToStandardFmt(const char* message);
 

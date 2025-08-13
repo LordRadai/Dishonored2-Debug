@@ -3,14 +3,19 @@
 #include <iostream>
 #include "Dishonored2/globals.h"
 #include "Dishonored2/Console/Console.h"
+#include "Dishonored2/idCmdSystemLocal/idCmdSystemLocal.h"
 #include "Hooks/D2Hooks.h"
 
 using namespace std;
 
 HINSTANCE hinst_dll = 0;
-std::thread begin_thread;
+std::thread g_BeginThread;
+std::thread g_TerminalThread;
 
 HMODULE g_hModule;
+DH2::idCmdSystemLocal* g_idCmdSystemLocal;
+
+std::atomic<bool> g_ConsoleThreadRunning{ true };
 
 extern "C" UINT_PTR directinput_create_proc = 0;
 extern "C" __declspec(dllexport) HRESULT __cdecl DirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID* ppvOut, LPUNKNOWN punkOuter);
@@ -25,8 +30,49 @@ void EnableAnsiColors()
     SetConsoleMode(hOut, dwMode);
 }
 
+void TerminalInputThread()
+{
+    std::string line;
+    while (g_ConsoleThreadRunning)
+    {
+        std::getline(std::cin, line);
+        if (line.empty()) continue;
+
+        g_idCmdSystemLocal->ExecuteCommand(line.c_str());
+    }
+}
+
+void StartTerminalConsole()
+{
+    AllocConsole();
+
+    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+    freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+    freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
+
+    SetStdHandle(STD_OUTPUT_HANDLE, GetStdHandle(STD_OUTPUT_HANDLE));
+    SetStdHandle(STD_INPUT_HANDLE, GetStdHandle(STD_INPUT_HANDLE));
+    SetStdHandle(STD_ERROR_HANDLE, GetStdHandle(STD_ERROR_HANDLE));
+
+    SetConsoleTitle(L"Debug Console");
+    EnableAnsiColors();
+
+	std::cout << "Debug Console Started.\n";
+
+    g_TerminalThread = std::thread(TerminalInputThread);
+}
+
+void StopTerminalConsole()
+{
+    g_ConsoleThreadRunning = false;
+    if (g_TerminalThread.joinable())
+        g_TerminalThread.join();
+}
+
 bool Begin(uint64_t qModuleHandle) {
 	g_hModule = GetModuleHandleA("Dishonored2.exe");
+
+    StartTerminalConsole();
 
     char dllpath[MAX_PATH];
     GetSystemDirectoryA(dllpath, MAX_PATH);
@@ -54,23 +100,19 @@ bool Begin(uint64_t qModuleHandle) {
         return false;
     }
 
-    // Do whatever here, entry point to the entire mod
-    AllocConsole();
-	EnableAnsiColors();
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-    freopen_s((FILE**)stdin, "CONOUT$", "w", stdin);
-
 	D2Hooks::InitializeHooks();
 
-	D2::Console::g_bAllowDebugCommands = (int*)(MODULE_ADDR+0x32cd1c8);
+	DH2::Console::g_bAllowDebugCommands = (int*)(MODULE_ADDR+0x32cd1c8);
+	g_idCmdSystemLocal = *(DH2::idCmdSystemLocal**)(MODULE_ADDR+0x228bae0);
 
-    *D2::Console::g_bAllowDebugCommands = 1;
+    *DH2::Console::g_bAllowDebugCommands = 1;
     
     return true;
 };
 
 void Shutdown() {
     D2Hooks::UninitializeHooks();
+	StopTerminalConsole();
     FreeLibrary(hinst_dll);
     FreeConsole();
 }
@@ -79,11 +121,12 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     switch (fdwReason) {
     case (DLL_PROCESS_ATTACH): {
         DisableThreadLibraryCalls(hinstDLL);
-        begin_thread = std::thread(Begin, (uint64_t)hinstDLL);
+        g_BeginThread = std::thread(Begin, (uint64_t)hinstDLL);
         break;
     };
     case (DLL_PROCESS_DETACH): {
-        begin_thread.detach();
+        g_BeginThread.detach();
+		g_TerminalThread.detach();
 		Shutdown();
         break;
     };
