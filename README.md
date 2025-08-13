@@ -227,3 +227,6 @@ writeEntitiesFile - writes out a production build .entities file for the specifi
 writeEntitiesFileWithError - writes out a production build .entities file for the specified map
 
 writeImage - Writes a tga for a given image
+
+## Things to note
+Certain features look like they have been disabled. Godmode, infinite coin, debug drawing mostly do not seem to work. I might be missing something, maybe changing a 0 to a 1 will make them work, it needs investigating.
