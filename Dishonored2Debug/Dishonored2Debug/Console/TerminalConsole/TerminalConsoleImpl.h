@@ -4,7 +4,7 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
-#include "Console.h"
+#include "../Console.h"
 
 class TerminalConsoleImpl : public Console
 {

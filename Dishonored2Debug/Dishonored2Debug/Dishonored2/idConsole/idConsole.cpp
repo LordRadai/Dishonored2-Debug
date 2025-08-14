@@ -1,4 +1,6 @@
 #include "idConsole.h"
+#include "Console/ImGuiConsole/ImGuiConsoleImpl.h"
+#include "extern.h"
 
 namespace DH2
 {
@@ -42,6 +44,26 @@ namespace DH2
             return output;
         }
 
+        std::string ConvertD2ConsoleMessageToImGuiConsoleFmt(const char* input)
+        {
+            if (!input) return "";
+
+            std::string output;
+
+            for (size_t i = 0; input[i]; ++i)
+            {
+                if (input[i] == '^' && input[i + 1])
+                {
+                    ++i;
+                    continue;
+                }
+
+                output += input[i];
+            }
+
+            return output;
+        }
+
         void hDebugConsoleOutput(const char* message, ...)
         {
             char buffer[1024];
@@ -51,8 +73,11 @@ namespace DH2
             vsnprintf(buffer, sizeof(buffer), message, args);
             va_end(args);
 
-            std::string colored = ConvertD2ConsoleMessageToStandardFmt(buffer);
-            printf_s("%s", colored.c_str());
+            std::string colored = ConvertD2ConsoleMessageToImGuiConsoleFmt(buffer);
+
+            if (g_Console)
+				g_Console->AddLogMessage(colored.c_str());
+
             fflush(stdout);
         }
 	}

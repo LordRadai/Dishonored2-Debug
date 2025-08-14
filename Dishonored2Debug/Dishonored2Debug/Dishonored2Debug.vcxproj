@@ -75,11 +75,13 @@
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\bin\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <TargetName>DINPUT8</TargetName>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)build\$(Platform)\$(Configuration)\bin\</OutDir>
     <IntDir>$(SolutionDir)build\$(Platform)\$(Configuration)\obj\$(ProjectName)\</IntDir>
     <TargetName>DINPUT8</TargetName>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,15 +119,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DLL1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DLL1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>imgui/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -134,27 +139,53 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DLL1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DLL1_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);NOMINMAX</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>imgui/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Console\Console.h" />
-    <ClInclude Include="Console\TerminalConsoleImpl.h" />
+    <ClInclude Include="Console\ImGuiConsole\ImGuiConsoleImpl.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\api.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\arguments.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\argument_parser.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\autocomplete.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\command.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\csys.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\exceptions.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\history.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\item.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\script.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\string.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\csys\system.h" />
+    <ClInclude Include="Console\ImGuiConsole\include\imgui_console\imgui_console.h" />
+    <ClInclude Include="Console\TerminalConsole\TerminalConsoleImpl.h" />
     <ClInclude Include="Dishonored2\dh2Game.h" />
     <ClInclude Include="Dishonored2\idConsole\idConsole.h" />
     <ClInclude Include="Dishonored2\DH2Call.h" />
     <ClInclude Include="Dishonored2\globals.h" />
     <ClInclude Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.h" />
+    <ClInclude Include="extern.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Hooks\D2Hooks.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="kiero\kiero.h" />
     <ClInclude Include="kiero\minhook\include\MinHook.h" />
     <ClInclude Include="kiero\minhook\src\buffer.h" />
@@ -166,13 +197,22 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Console\TerminalConsoleImpl.cpp" />
+    <ClCompile Include="Console\ImGuiConsole\ImGuiConsoleImpl.cpp" />
+    <ClCompile Include="Console\ImGuiConsole\src\imgui_console.cpp" />
+    <ClCompile Include="Console\TerminalConsole\TerminalConsoleImpl.cpp" />
     <ClCompile Include="Dishonored2\dh2Game.cpp" />
     <ClCompile Include="Dishonored2\globals.cpp" />
     <ClCompile Include="Dishonored2\idConsole\idConsole.cpp" />
     <ClCompile Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hooks\D2Hooks.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />
     <ClCompile Include="kiero\minhook\src\buffer.c" />
     <ClCompile Include="kiero\minhook\src\hde\hde32.c" />
@@ -181,6 +221,11 @@
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Console\ImGuiConsole\include\csys\autocomplete.inl" />
+    <None Include="Console\ImGuiConsole\include\csys\history.inl" />
+    <None Include="Console\ImGuiConsole\include\csys\item.inl" />
+    <None Include="Console\ImGuiConsole\include\csys\script.inl" />
+    <None Include="Console\ImGuiConsole\include\csys\system.inl" />
     <None Include="HookManager\HookManager.inl" />
     <None Include="kiero\minhook\dll_resources\MinHook.def" />
   </ItemGroup>
