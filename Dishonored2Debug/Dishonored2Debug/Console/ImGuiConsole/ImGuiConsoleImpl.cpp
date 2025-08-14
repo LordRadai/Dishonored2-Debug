@@ -133,6 +133,7 @@ void ImGuiConsoleImpl::AddLogMessage(const char* message, ...)
 	va_end(args);
 
 	System().Log(csys::ItemType::kLog) << buffer;
+	m_ScrollToBottom = true;
 }
 
 void ImGuiConsoleImpl::AddErrorMessage(const char* message, ...)

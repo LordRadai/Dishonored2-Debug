@@ -147,7 +147,7 @@ void ImGuiConsole::DefaultSettings()
 {
     // Settings
     m_AutoScroll = true;
-    m_ScrollToBottom = false;
+    m_ScrollToBottom = true;
     m_ColoredOutput = true;
     m_FilterBar = true;
     m_TimeStamps = true;
