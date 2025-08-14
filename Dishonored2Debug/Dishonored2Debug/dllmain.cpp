@@ -27,7 +27,8 @@ ID3D11Device* g_device = nullptr;
 ID3D11DeviceContext* g_context = nullptr;
 ID3D11RenderTargetView* g_renderTargetView = nullptr;
 HWND g_hwnd = nullptr;
-bool g_imguiInitialized = false;
+bool g_bImGuiInitialized = false;
+bool g_bShowStyleEditor = false;
 
 bool g_bDone = false;
 
@@ -42,15 +43,18 @@ extern LRESULT ImGui_ImplWin32_WndProcHandler(HWND, UINT, WPARAM, LPARAM);
 WNDPROC oWndProc = nullptr;
 LRESULT __stdcall WndProcHook(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
+    if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) && (GetAsyncKeyState(VK_F10) & 1))
+		g_bShowStyleEditor = !g_bShowStyleEditor;
+
     if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
         return true;
-
+    
     return CallWindowProc(oWndProc, hWnd, uMsg, wParam, lParam);
 }
 
 void InitImGui(IDXGISwapChain* swapChain)
 {
-    if (!g_imguiInitialized)
+    if (!g_bImGuiInitialized)
     {
         // Get device & context
         if (SUCCEEDED(swapChain->GetDevice(__uuidof(ID3D11Device), (void**)&g_device)))
@@ -83,14 +87,14 @@ void InitImGui(IDXGISwapChain* swapChain)
             ImGui_ImplWin32_Init(g_hwnd);
             ImGui_ImplDX11_Init(g_device, g_context);
 
-            g_imguiInitialized = true;
+            g_bImGuiInitialized = true;
         }
     }
 }
 
 HRESULT __stdcall hkPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT flags)
 {
-    if (!g_imguiInitialized)
+    if (!g_bImGuiInitialized)
         InitImGui(swapChain);
 
     // Start new ImGui frame
@@ -100,6 +104,9 @@ HRESULT __stdcall hkPresent(IDXGISwapChain* swapChain, UINT syncInterval, UINT f
 
     if (g_Console)
 	    g_Console->Draw();
+
+    if (g_bShowStyleEditor)
+        ImGui::ShowStyleEditor();
 
     // Render
     ImGui::Render();
@@ -149,7 +156,7 @@ bool Begin(uint64_t qModuleHandle) {
 
 	g_dh2Game->Initialize();
 
-    while (!g_imguiInitialized) Sleep(100);
+    while (!g_bImGuiInitialized) Sleep(100);
     g_Console = new ImGuiConsoleImpl();
 
     g_Console->Initialize();

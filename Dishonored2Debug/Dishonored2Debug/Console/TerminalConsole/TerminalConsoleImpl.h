@@ -13,10 +13,13 @@ class TerminalConsoleImpl : public Console
 	std::mutex m_consoleMutex;
 public:
 	TerminalConsoleImpl() {}
+
 	~TerminalConsoleImpl() override {}
 	bool Initialize() override;
 	void Shutdown() override;
 	void Update() override;
+	bool IsVisible() override { return true; }
+	bool WantCaptureInputs() override { return false; }
 
 protected:
 	void EnableAnsiColors();

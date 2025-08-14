@@ -12,7 +12,6 @@ class ImGuiConsoleImpl : public Console
 		kNumModes
 	};
 
-	bool m_bShowStyleEditor = false;
 	bool m_bShow = false;
 	DisplayMode m_displayMode = DisplayMode::kHidden;
 	ImGuiConsole m_console;
@@ -25,6 +24,8 @@ public:
 	bool Initialize() override;
 	void Shutdown() override;
 	void Update() override;
+	bool IsVisible() override { return m_bShow; }
+	bool WantCaptureInputs() override { return m_displayMode == DisplayMode::kCaptureInputs; }
 
 	void Draw();
 

@@ -108,22 +108,8 @@ void ImGuiConsoleImpl::Update()
 	if (!m_bInitialized)
 		return;
 
-	if (GetAsyncKeyState(VK_F10) & 1)
+	if (GetAsyncKeyState(VK_OEM_5) & 1)
 		CycleDisplayMode();
-
-	if (GetAsyncKeyState(VK_F11) & 1)
-		m_bShowStyleEditor = !m_bShowStyleEditor;
-
-	if (m_bShow)
-	{
-		ImGui::GetIO().MouseDrawCursor = true;
-
-		if (m_displayMode == DisplayMode::kCaptureInputs)
-		{
-			ImGui::GetIO().WantCaptureMouse = true;
-			ImGui::GetIO().WantCaptureKeyboard = true;
-		}
-	}
 }
 
 void ImGuiConsoleImpl::Draw()
@@ -132,15 +118,7 @@ void ImGuiConsoleImpl::Draw()
 		return;
 
 	if (m_bShow)
-	{
-		ImGui::SetNextWindowPos(ImVec2(0, 0));
-		ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x, 300));
-
 		m_console.Draw();
-	}
-
-	if (m_bShowStyleEditor)
-		ImGui::ShowStyleEditor();
 }
 
 void ImGuiConsoleImpl::AddLogMessage(const char* message, ...)
