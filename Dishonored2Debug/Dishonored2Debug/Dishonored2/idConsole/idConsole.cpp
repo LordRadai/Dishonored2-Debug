@@ -52,7 +52,8 @@ namespace DH2
             va_end(args);
 
             std::string colored = ConvertD2ConsoleMessageToStandardFmt(buffer);
-            printf("%s", colored.c_str());
+			OutputDebugStringA(colored.c_str());
+            printf_s(colored.c_str());
             fflush(stdout);
         }
 	}

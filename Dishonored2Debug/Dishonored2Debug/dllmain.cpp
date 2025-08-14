@@ -1,81 +1,35 @@
 #include <windows.h>
 #include <thread>
 #include <iostream>
-#include "Dishonored2/globals.h"
-#include "Dishonored2/idConsole/idConsole.h"
+#include <stdio.h>
+#include <string>
+#include "Dishonored2/dh2Game.h"
 #include "Dishonored2/idCmdSystemLocal/idCmdSystemLocal.h"
+#include "Dishonored2/globals.h"
 #include "Hooks/D2Hooks.h"
+#include "Console/TerminalConsoleImpl.h"
 
 using namespace std;
 
-HINSTANCE hinst_dll = 0;
+HINSTANCE g_hInstDll = 0;
 std::thread g_BeginThread;
-std::thread g_TerminalThread;
-
-HMODULE g_hModule;
-DH2::idCmdSystemLocal* g_idCmdSystemLocal;
-
-std::atomic<bool> g_ConsoleThreadRunning{ true };
+DH2::dh2Game* g_dh2Game = nullptr;
+TerminalConsoleImpl* g_TerminalConsole = nullptr;
 
 extern "C" UINT_PTR directinput_create_proc = 0;
 extern "C" __declspec(dllexport) HRESULT __cdecl DirectInput8Create(HINSTANCE hinst, DWORD dwVersion, REFIID riidltf, LPVOID* ppvOut, LPUNKNOWN punkOuter);
 static decltype(&DirectInput8Create) original_dinput8_create;
 
-void EnableAnsiColors()
-{
-    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-    DWORD dwMode = 0;
-    GetConsoleMode(hOut, &dwMode);
-    dwMode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-    SetConsoleMode(hOut, dwMode);
-}
-
-void TerminalInputThread()
-{
-    std::string line;
-    while (g_ConsoleThreadRunning)
-    {
-        std::getline(std::cin, line);
-        if (line.empty()) continue;
-
-        g_idCmdSystemLocal->ExecuteCommand(line.c_str());
-    }
-}
-
-void StartTerminalConsole()
-{
-    AllocConsole();
-
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
-    freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
-    freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
-
-    SetStdHandle(STD_OUTPUT_HANDLE, GetStdHandle(STD_OUTPUT_HANDLE));
-    SetStdHandle(STD_INPUT_HANDLE, GetStdHandle(STD_INPUT_HANDLE));
-    SetStdHandle(STD_ERROR_HANDLE, GetStdHandle(STD_ERROR_HANDLE));
-
-    SetConsoleTitle(L"Debug Console");
-    EnableAnsiColors();
-
-    g_TerminalThread = std::thread(TerminalInputThread);
-}
-
-void StopTerminalConsole()
-{
-    g_ConsoleThreadRunning = false;
-    if (g_TerminalThread.joinable())
-        g_TerminalThread.join();
-}
-
 bool Begin(uint64_t qModuleHandle) {
 	g_hModule = GetModuleHandleA("Dishonored2.exe");
 
-    StartTerminalConsole();
+	g_dh2Game = new DH2::dh2Game();
+	g_TerminalConsole = new TerminalConsoleImpl();
 
     char dllpath[MAX_PATH];
     GetSystemDirectoryA(dllpath, MAX_PATH);
     strcat_s(dllpath, "\\dinput8.dll");
-    hinst_dll = LoadLibraryA(dllpath);
+    g_hInstDll = LoadLibraryA(dllpath);
 
     MH_STATUS status = MH_Initialize();
     if (status != MH_OK)
@@ -85,13 +39,13 @@ bool Begin(uint64_t qModuleHandle) {
         return false;
     }
 
-    if (!hinst_dll)
+    if (!g_hInstDll)
     {
         MessageBoxA(NULL, "Failed to load original DLL", "Error", MB_ICONERROR);
         return false;
     };
 
-    original_dinput8_create = (decltype(&DirectInput8Create))GetProcAddress(hinst_dll, "DirectInput8Create");
+    original_dinput8_create = (decltype(&DirectInput8Create))GetProcAddress(g_hInstDll, "DirectInput8Create");
     if (!original_dinput8_create)
     {
         MessageBoxA(NULL, "Failed to load original DLL", "Error", MB_ICONERROR);
@@ -100,22 +54,23 @@ bool Begin(uint64_t qModuleHandle) {
 
 	D2Hooks::InitializeHooks();
 
-	DH2::idConsole::g_bAllowDebugCommands = (int*)(MODULE_ADDR+0x32cd1c8);
-	g_idCmdSystemLocal = *(DH2::idCmdSystemLocal**)(MODULE_ADDR+0x228bae0);
-
-	// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes.
-    *(char**)(MODULE_ADDR+0x22aba68) = nullptr;
-    
-    *DH2::idConsole::g_bAllowDebugCommands = 1;
+	g_dh2Game->Initialize();
+	g_TerminalConsole->Initialize();
     
     return true;
 };
 
-void Shutdown() {
+void Shutdown() 
+{
     D2Hooks::UninitializeHooks();
-	StopTerminalConsole();
-    FreeLibrary(hinst_dll);
-    FreeConsole();
+
+	g_dh2Game->Shutdown();
+	g_TerminalConsole->Shutdown();
+
+    delete g_dh2Game;
+	delete g_TerminalConsole;
+
+    FreeLibrary(g_hInstDll);
 }
 
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
@@ -127,7 +82,6 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
     };
     case (DLL_PROCESS_DETACH): {
         g_BeginThread.detach();
-		g_TerminalThread.detach();
 		Shutdown();
         break;
     };

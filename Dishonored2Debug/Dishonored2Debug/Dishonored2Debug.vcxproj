@@ -146,6 +146,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Console\Console.h" />
+    <ClInclude Include="Console\TerminalConsoleImpl.h" />
+    <ClInclude Include="Dishonored2\dh2Game.h" />
     <ClInclude Include="Dishonored2\idConsole\idConsole.h" />
     <ClInclude Include="Dishonored2\DH2Call.h" />
     <ClInclude Include="Dishonored2\globals.h" />
@@ -163,8 +166,11 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Console\TerminalConsoleImpl.cpp" />
+    <ClCompile Include="Dishonored2\dh2Game.cpp" />
+    <ClCompile Include="Dishonored2\globals.cpp" />
     <ClCompile Include="Dishonored2\idConsole\idConsole.cpp" />
-    <ClCompile Include="Dishonored2\idCmdSystemLocal\idCommandSystemLocal.cpp" />
+    <ClCompile Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hooks\D2Hooks.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />
