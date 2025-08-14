@@ -2,7 +2,7 @@
 #include "ImGuiConsoleImpl.h"
 
 ImGuiConsoleImpl::ImGuiConsoleImpl() : 
-	m_console("Dishonored2 Console")
+	ImGuiConsole("Dishonored2 Console", 256)
 {
 	m_bInitialized = false;
 }
@@ -118,7 +118,7 @@ void ImGuiConsoleImpl::Draw()
 		return;
 
 	if (m_bShow)
-		m_console.Draw();
+		ImGuiConsole::Draw();
 }
 
 void ImGuiConsoleImpl::AddLogMessage(const char* message, ...)
@@ -132,7 +132,7 @@ void ImGuiConsoleImpl::AddLogMessage(const char* message, ...)
 	vsnprintf(buffer, sizeof(buffer), message, args);
 	va_end(args);
 
-	m_console.System().Log(csys::ItemType::kLog) << buffer;
+	System().Log(csys::ItemType::kLog) << buffer;
 }
 
 void ImGuiConsoleImpl::AddErrorMessage(const char* message, ...)
@@ -146,7 +146,8 @@ void ImGuiConsoleImpl::AddErrorMessage(const char* message, ...)
 	vsnprintf(buffer, sizeof(buffer), message, args);
 	va_end(args);
 
-	m_console.System().Log(csys::ItemType::kError) << buffer;
+	System().Log(csys::ItemType::kError) << buffer;
+	m_ScrollToBottom = true;
 }
 
 void ImGuiConsoleImpl::AddWarningMessage(const char* message, ...)
@@ -160,7 +161,8 @@ void ImGuiConsoleImpl::AddWarningMessage(const char* message, ...)
 	vsnprintf(buffer, sizeof(buffer), message, args);
 	va_end(args);
 
-	m_console.System().Log(csys::ItemType::kWarning) << buffer;
+	System().Log(csys::ItemType::kWarning) << buffer;
+	m_ScrollToBottom = true;
 }
 
 void ImGuiConsoleImpl::AddInfoMessage(const char* message, ...)
@@ -174,7 +176,8 @@ void ImGuiConsoleImpl::AddInfoMessage(const char* message, ...)
 	vsnprintf(buffer, sizeof(buffer), message, args);
 	va_end(args);
 
-	m_console.System().Log(csys::ItemType::kInfo) << buffer;
+	System().Log(csys::ItemType::kInfo) << buffer;
+	m_ScrollToBottom = true;
 }
 
 void ImGuiConsoleImpl::CycleDisplayMode()

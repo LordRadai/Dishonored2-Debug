@@ -243,8 +243,6 @@ void ImGuiConsole::LogWindow()
                             ((item.m_TimeStamp / 1000) % 60), item.m_TimeStamp % 1000);
                 ImGui::PopStyleColor();
             }
-
-            m_ScrollToBottom = true;
         }
 
         // Stop wrapping since we are done displaying console items.

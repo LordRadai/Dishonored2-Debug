@@ -2,7 +2,7 @@
 #include "include/imgui_console/imgui_console.h"
 #include "../Console.h"
 
-class ImGuiConsoleImpl : public Console
+class ImGuiConsoleImpl : public Console, public ImGuiConsole
 {
 	enum class DisplayMode
 	{
@@ -14,7 +14,6 @@ class ImGuiConsoleImpl : public Console
 
 	bool m_bShow = false;
 	DisplayMode m_displayMode = DisplayMode::kHidden;
-	ImGuiConsole m_console;
 
 	void InitializeStyle();
 public:
