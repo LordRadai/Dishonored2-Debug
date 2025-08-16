@@ -1,5 +1,5 @@
 #pragma once
-#include "include/imgui_console/imgui_console.h"
+#include "imgui_console/imgui_console.h"
 #include "../Console.h"
 
 class ImGuiConsoleImpl : public Console, public ImGuiConsole

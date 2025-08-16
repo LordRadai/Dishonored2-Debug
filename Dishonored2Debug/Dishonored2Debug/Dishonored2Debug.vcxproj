@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -156,6 +156,19 @@
   <ItemGroup>
     <ClInclude Include="Console\Console.h" />
     <ClInclude Include="Console\ImGuiConsole\ImGuiConsoleImpl.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\api.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\arguments.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\argument_parser.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\autocomplete.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\command.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\csys.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\exceptions.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\history.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\item.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\script.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\string.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\system.h" />
+    <ClInclude Include="Console\ImGuiConsole\imgui_console\imgui_console.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\api.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\arguments.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\argument_parser.h" />
@@ -168,16 +181,15 @@
     <ClInclude Include="Console\ImGuiConsole\include\csys\script.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\string.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\system.h" />
-    <ClInclude Include="Console\ImGuiConsole\include\imgui_console\imgui_console.h" />
-    <ClInclude Include="Console\TerminalConsole\TerminalConsoleImpl.h" />
-    <ClInclude Include="Dishonored2\dh2Game.h" />
-    <ClInclude Include="Dishonored2\idConsole\idConsole.h" />
+    <ClInclude Include="Dishonored2\idCommonLocal\idCommonLocal.h" />
+    <ClInclude Include="Dishonored2\idConsoleLocal\idConsoleLocal.h" />
     <ClInclude Include="Dishonored2\DH2Call.h" />
-    <ClInclude Include="Dishonored2\globals.h" />
+    <ClInclude Include="Dishonored2\dh2Globals.h" />
     <ClInclude Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.h" />
+    <ClInclude Include="Dishonored2\idMainThread\idMainThread.h" />
     <ClInclude Include="extern.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Hooks\D2Hooks.h" />
+    <ClInclude Include="Hooks\DH2Hooks.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_impl_dx11.h" />
@@ -198,14 +210,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Console\ImGuiConsole\ImGuiConsoleImpl.cpp" />
-    <ClCompile Include="Console\ImGuiConsole\src\imgui_console.cpp" />
-    <ClCompile Include="Console\TerminalConsole\TerminalConsoleImpl.cpp" />
-    <ClCompile Include="Dishonored2\dh2Game.cpp" />
-    <ClCompile Include="Dishonored2\globals.cpp" />
-    <ClCompile Include="Dishonored2\idConsole\idConsole.cpp" />
+    <ClCompile Include="Console\ImGuiConsole\imgui_console\imgui_console.cpp" />
+    <ClCompile Include="Dishonored2\dh2Globals.cpp" />
+    <ClCompile Include="Dishonored2\idCommonLocal\idCommonLocal.cpp" />
+    <ClCompile Include="Dishonored2\idConsoleLocal\idConsoleLocal.cpp" />
     <ClCompile Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.cpp" />
+    <ClCompile Include="Dishonored2\idMainThread\idMainThread.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Hooks\D2Hooks.cpp" />
+    <ClCompile Include="Hooks\DH2Hooks.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -221,6 +233,11 @@
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Console\ImGuiConsole\imgui_console\csys\autocomplete.inl" />
+    <None Include="Console\ImGuiConsole\imgui_console\csys\history.inl" />
+    <None Include="Console\ImGuiConsole\imgui_console\csys\item.inl" />
+    <None Include="Console\ImGuiConsole\imgui_console\csys\script.inl" />
+    <None Include="Console\ImGuiConsole\imgui_console\csys\system.inl" />
     <None Include="Console\ImGuiConsole\include\csys\autocomplete.inl" />
     <None Include="Console\ImGuiConsole\include\csys\history.inl" />
     <None Include="Console\ImGuiConsole\include\csys\item.inl" />

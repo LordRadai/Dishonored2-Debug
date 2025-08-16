@@ -1,5 +1,5 @@
 #pragma once
-#include "globals.h"
+#include "dh2Globals.h"
 
 #define DH2_CALL(type, offset, ...) \
     (reinterpret_cast<type>((MODULE_ADDR) + (offset))(__VA_ARGS__))

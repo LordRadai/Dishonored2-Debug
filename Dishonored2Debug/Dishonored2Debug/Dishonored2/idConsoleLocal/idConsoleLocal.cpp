@@ -1,4 +1,4 @@
-#include "idConsole.h"
+#include "idConsoleLocal.h"
 #include "Console/ImGuiConsole/ImGuiConsoleImpl.h"
 #include "extern.h"
 
@@ -6,7 +6,7 @@ namespace DH2
 {
 	namespace idConsole
 	{
-		int* g_bAllowDebugCommands;
+		int* g_bDeveloperMode;
 
 		oConsoleOutput pConsoleOutput = nullptr;
 		oConsoleOutput pConsoleOutputTarget = nullptr;
@@ -73,7 +73,7 @@ namespace DH2
             vsnprintf(buffer, sizeof(buffer), message, args);
             va_end(args);
 
-            std::string colored = ConvertD2ConsoleMessageToImGuiConsoleFmt(buffer);
+            std::string colored = ConvertD2ConsoleMessageToStandardFmt(buffer);
 
             if (g_Console)
 				g_Console->AddLogMessage(colored.c_str());

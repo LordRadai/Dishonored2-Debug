@@ -4,10 +4,10 @@
 //#pragma once
 
 #include <string>
-#include "../include/imgui_console/imgui_console.h"
+#include "imgui_console.h"
 #include "imgui_internal.h"
 #include "Dishonored2/idCmdSystemLocal/idCmdSystemLocal.h"
-#include "Dishonored2/globals.h"
+#include "Dishonored2/dh2Globals.h"
 #include <cstring>
 
 // The following three functions (InputTextCallback_UserData, InputTextCallback, InputText) are obtained from misc/cpp/imgui_stdlib.h

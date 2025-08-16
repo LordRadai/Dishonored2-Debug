@@ -1,7 +1,7 @@
 #pragma once
 #include "../HookManager/HookManager.inl"
 
-static class D2Hooks
+static class DH2Hooks
 {
 public:
 	static bool InitializeHooks();

@@ -1,3 +1,4 @@
+#include <string>
 #include "idCmdSystemLocal.h"
 #include "../DH2Call.h"
 

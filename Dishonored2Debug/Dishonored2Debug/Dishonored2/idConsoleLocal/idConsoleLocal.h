@@ -10,7 +10,7 @@ namespace DH2
 
 	namespace idConsole
 	{
-		extern int* g_bAllowDebugCommands;
+		extern int* g_bDeveloperMode;
 
 		typedef void(_fastcall* oConsoleOutput)(const char* message, ...);
 
