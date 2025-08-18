@@ -45,6 +45,6 @@ bool DH2Hooks::InitializeHooks()
 
 void DH2Hooks::UninitializeHooks()
 {
-	HookManager::RemoveHook(&DH2::idMainThread::GetVTableAddr()[1], "idMainThread::Startup");
+	HookManager::RemoveHook(&DH2::idCommonLocal::GetVTableAddr()[1], "idMainThread::Startup");
 	HookManager::RemoveHook(&DH2::idConsole::pConsoleOutputTarget, "ConsoleOutput");
 }
