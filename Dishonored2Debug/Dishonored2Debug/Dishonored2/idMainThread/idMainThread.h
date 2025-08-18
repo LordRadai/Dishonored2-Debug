@@ -9,7 +9,7 @@ namespace DH2
 	{
 		void** _vfptr;
 	public:
-		typedef void(_fastcall* oStartup_t)(idMainThread* self);
+		typedef void(_fastcall* oInitialize_t)(idMainThread* self);
 		static void** GetVTableAddr() { return (void**)(MODULE_ADDR + 0x1ae1078); }
 	};
 }

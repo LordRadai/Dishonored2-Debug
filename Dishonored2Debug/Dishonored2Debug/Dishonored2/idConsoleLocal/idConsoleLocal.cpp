@@ -64,7 +64,7 @@ namespace DH2
             return output;
         }
 
-        void hDebugConsoleOutput(const char* message, ...)
+        void hkDebugConsoleOutput(const char* message, ...)
         {
             char buffer[1024];
 

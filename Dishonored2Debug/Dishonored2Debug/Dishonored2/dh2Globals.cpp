@@ -3,6 +3,7 @@
 
 HMODULE g_hModule;
 HWND g_hWnd;
+int* g_showConsole = nullptr;
 
 namespace DH2
 {

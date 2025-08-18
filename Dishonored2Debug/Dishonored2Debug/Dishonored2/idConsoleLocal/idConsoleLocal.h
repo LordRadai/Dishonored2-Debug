@@ -17,6 +17,6 @@ namespace DH2
 		extern oConsoleOutput pConsoleOutput;
 		extern oConsoleOutput pConsoleOutputTarget;
 
-		void hDebugConsoleOutput(const char* message, ...);
+		void hkDebugConsoleOutput(const char* message, ...);
 	}
 }

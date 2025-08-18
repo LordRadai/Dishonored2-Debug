@@ -4,6 +4,7 @@
 
 extern HMODULE g_hModule;
 extern HWND g_hWnd;
+extern int* g_showConsole;
 
 namespace DH2
 {
