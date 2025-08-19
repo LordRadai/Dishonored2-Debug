@@ -82,9 +82,12 @@ bool AllocateConsole()
 
 bool Begin(uint64_t qModuleHandle) 
 {
-    //AllocConsole();
+#ifdef _CONSOLE
+    AllocConsole();
+#endif
 
-    g_hModule = GetModuleHandleA("Dishonored2.exe");
+    if (!DH2::GetGlobalVariables())
+        return false;
 
     if (!InitialiseDllInstance())
         fprintf_s(stderr, "Failed to initialize DLL instance.\n");
@@ -100,7 +103,7 @@ bool Begin(uint64_t qModuleHandle)
 
 void Shutdown() 
 {
-    DH2Hooks::UninitializeHooks();
+    DH2Hooks::FinalizeHooks();
 
     FreeLibrary(g_hInstDll);
 }

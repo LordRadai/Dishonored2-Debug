@@ -5,5 +5,5 @@ static class DH2Hooks
 {
 public:
 	static bool InitializeHooks();
-	static void UninitializeHooks();
+	static void FinalizeHooks();
 };

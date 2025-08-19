@@ -10,19 +10,10 @@ namespace DH2hk
 {
 	namespace Console
 	{
-		typedef void(_fastcall* oSys_ShowConsole_t)(int visLevel, bool show);
 		typedef void(_fastcall* oConsoleOutput_t)(const char* message, ...);
-
-		oSys_ShowConsole_t pSys_ShowConsole = nullptr;
-		oSys_ShowConsole_t pSys_ShowConsoleTarget = nullptr;
 
 		oConsoleOutput_t pConsoleOutput = nullptr;
 		oConsoleOutput_t pConsoleOutputTarget = nullptr;
-
-		void __fastcall hkSys_ShowConsole(int visLevel, bool show)
-		{
-			pSys_ShowConsole(visLevel, true);
-		}
 
         std::string ConvertD2ConsoleMessageToStandardFmt(const char* input)
         {
@@ -88,16 +79,21 @@ namespace DH2hk
 
             std::string stripped = ConvertD2ConsoleMessageToStripped(buffer);
 
-            if (DH2::g_idPrintListeners)
+            if (g_idPrintListeners)
             {
-                DH2::idPrintListener* listener = *DH2::g_idPrintListeners;
+                DH2::idPrintListener* listener = *g_idPrintListeners;
 
                 while (listener != nullptr)
                 {
+					uint64_t vtableAddr = *(uint64_t*)listener;
+
                     listener->Print(stripped.c_str());
                     listener = listener->Next();
                 }
             }
+
+			printf_s("%s", stripped.c_str());
+            fflush(stdout);
         }
 	}
 
@@ -107,7 +103,7 @@ namespace DH2hk
 
 		void __fastcall hkInit(DH2::idCommonLocal* self, int param2, uint64_t param3, char* commandLine)
 		{
-			DH2::Console::Sys_ShowConsole(SW_SHOWNORMAL, true);
+			DH2::Console::Sys_ShowConsole(*g_consoleVisLevel, true);
 
 			pInit(self, param2, param3, commandLine);
 		}
@@ -120,15 +116,9 @@ namespace DH2hk
 
 		void __fastcall hkInitialize(DH2::idMainThread* self)
 		{
-			g_hWnd = *(HWND*)(MODULE_ADDR + 0x3137f40);
-			g_bDeveloperMode = (int*)(MODULE_ADDR + 0x32cd1c8);
 			*g_bDeveloperMode = 1;
-
-			g_consoleVisLevel = (int*)(MODULE_ADDR + 0x3135948);
+			*g_showConsole = 1;
 			*g_consoleVisLevel = 1;
-
-			DH2::g_idCmdSystemLocal = *(DH2::idCmdSystemLocal**)(MODULE_ADDR + 0x228bae0);
-			DH2::g_idPrintListeners = (DH2::idPrintListener**)(MODULE_ADDR + 0x32ccf98);
 
 			// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes.
 			*(char**)(MODULE_ADDR + 0x22aba68) = nullptr;
@@ -144,15 +134,13 @@ bool DH2Hooks::InitializeHooks()
 
 	HookManager::CreateHook(MODULE_ADDR+0x166ad0, &DH2hk::idMainThread::pInitializeTarget, &DH2hk::idMainThread::hkInitialize, &DH2hk::idMainThread::pInitialize, "idMainThread::Initialize");
 	HookManager::CreateHook(MODULE_ADDR+0x166830, &DH2hk::Console::pConsoleOutputTarget, DH2hk::Console::hkDebugConsoleOutput, &DH2hk::Console::pConsoleOutput, "ConsoleOutput");
-	HookManager::CreateHook(MODULE_ADDR+0xe9a80, &DH2hk::Console::pSys_ShowConsoleTarget, &DH2hk::Console::hkSys_ShowConsole, &DH2hk::Console::pSys_ShowConsole, "Sys_ShowConsole");
 
 	return true;
 }
 
-void DH2Hooks::UninitializeHooks()
+void DH2Hooks::FinalizeHooks()
 {
 	HookManager::RemoveHook(&DH2::idCommonLocal::GetVTableAddr()[1], "idCommonLocal::Init");
 	HookManager::RemoveHook(&DH2hk::idMainThread::pInitializeTarget, "idMainThread::Initialize");
 	HookManager::RemoveHook(&DH2hk::Console::pConsoleOutputTarget, "ConsoleOutput");
-	HookManager::RemoveHook(&DH2hk::Console::pSys_ShowConsoleTarget, "Sys_ShowConsole");
 }
