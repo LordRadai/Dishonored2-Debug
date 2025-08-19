@@ -99,7 +99,7 @@ namespace DH2hk
             if (g_idConsoleLocal)
                 g_idConsoleLocal->Print(buffer);
 
-#ifdef _CONSOLE 
+#ifdef _CONSOLE
             printf_s("%s", ConvertD2ConsoleMessageToStandardFmt(buffer).c_str());
             fflush(stdout);
 #endif
