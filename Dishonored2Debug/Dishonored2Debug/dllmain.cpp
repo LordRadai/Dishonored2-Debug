@@ -62,16 +62,16 @@ bool InitializeMinHook()
     return true;
 }
 
-bool AllocateConsole()
+bool BindConsole()
 {
     if (AllocConsole())
     {
-        freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
         freopen_s((FILE**)stdin, "CONIN$", "r", stdin);
+        freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
         freopen_s((FILE**)stderr, "CONOUT$", "w", stderr);
 
-        SetStdHandle(STD_OUTPUT_HANDLE, GetStdHandle(STD_OUTPUT_HANDLE));
         SetStdHandle(STD_INPUT_HANDLE, GetStdHandle(STD_INPUT_HANDLE));
+        SetStdHandle(STD_OUTPUT_HANDLE, GetStdHandle(STD_OUTPUT_HANDLE));
         SetStdHandle(STD_ERROR_HANDLE, GetStdHandle(STD_ERROR_HANDLE));
 
         return true;
@@ -83,7 +83,8 @@ bool AllocateConsole()
 bool Begin(uint64_t qModuleHandle) 
 {
 #ifdef _CONSOLE
-    AllocConsole();
+    if (!BindConsole())
+        MessageBoxA(NULL, "Failed to allocate console", "Error", MB_ICONERROR);
 #endif
 
     if (!DH2::GetGlobalVariables())

@@ -8,6 +8,6 @@ namespace DH2
 {
 	namespace Console
 	{
-		void Sys_ShowConsole(int visLevel, bool show);
+		void Sys_ShowConsole(uint32_t visLevel, bool show);
 	}
 }

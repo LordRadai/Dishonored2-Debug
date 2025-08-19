@@ -5,11 +5,11 @@
 
 namespace DH2
 {
-    typedef void(_fastcall* oSys_ShowConsole_t)(int visLevel, bool show);
+    typedef void(_fastcall* oSys_ShowConsole_t)(uint32_t visLevel, bool show);
 
 	namespace Console
 	{
-        void Sys_ShowConsole(int visLevel, bool show)
+        void Sys_ShowConsole(uint32_t visLevel, bool show)
         {
 			DH2_CALL(oSys_ShowConsole_t, 0xe9a80, visLevel, show);
         }

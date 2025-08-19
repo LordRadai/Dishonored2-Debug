@@ -44,7 +44,9 @@ namespace DH2hk
                 output += input[i];
             }
 
-            output += "\033[0m";
+            if (output.empty() || output.back() != '\n')
+                output += '\n';
+
             return output;
         }
 
@@ -65,6 +67,9 @@ namespace DH2hk
                 output += input[i];
             }
 
+            if (output.empty() || output.back() != '\n')
+                output += '\n';
+
             return output;
         }
 
@@ -77,23 +82,23 @@ namespace DH2hk
             vsnprintf(buffer, sizeof(buffer), message, args);
             va_end(args);
 
-            std::string stripped = ConvertD2ConsoleMessageToStripped(buffer);
-
+            /*
             if (g_idPrintListeners)
             {
                 DH2::idPrintListener* listener = *g_idPrintListeners;
 
                 while (listener != nullptr)
                 {
-					uint64_t vtableAddr = *(uint64_t*)listener;
-
-                    listener->Print(stripped.c_str());
+                    listener->Print(ConvertD2ConsoleMessageToStripped(buffer).c_str());
                     listener = listener->Next();
                 }
             }
+            */
 
-			printf_s("%s", stripped.c_str());
+#ifdef _CONSOLE
+			printf_s("%s", ConvertD2ConsoleMessageToStandardFmt(buffer).c_str());
             fflush(stdout);
+#endif
         }
 	}
 
@@ -103,7 +108,7 @@ namespace DH2hk
 
 		void __fastcall hkInit(DH2::idCommonLocal* self, int param2, uint64_t param3, char* commandLine)
 		{
-			DH2::Console::Sys_ShowConsole(*g_consoleVisLevel, true);
+			//DH2::Console::Sys_ShowConsole(*g_engineConsoleVisLevel, true);
 
 			pInit(self, param2, param3, commandLine);
 		}
@@ -116,11 +121,14 @@ namespace DH2hk
 
 		void __fastcall hkInitialize(DH2::idMainThread* self)
 		{
-			*g_bDeveloperMode = 1;
-			*g_showConsole = 1;
-			*g_consoleVisLevel = 1;
+			*g_bDeveloperMode = TRUE;
+			
+#ifndef _CONSOLE
+			*g_showEngineConsole = FALSE;
+			*g_engineConsoleVisLevel = EngineConsoleVisLevel::kHidden;
+#endif
 
-			// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes.
+			// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes when issuing the listCvars -type command.
 			*(char**)(MODULE_ADDR + 0x22aba68) = nullptr;
 			
 			pInitialize(self);

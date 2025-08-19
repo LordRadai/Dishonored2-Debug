@@ -4,10 +4,14 @@
 
 HMODULE g_hModule;
 HWND g_hWnd;
-int* g_showConsole = nullptr;
-bool* g_bConsoleEnabled = nullptr;
-int* g_consoleVisLevel = nullptr;
-int* g_bDeveloperMode = nullptr;
+
+uint32_t* g_bDeveloperMode = nullptr;
+uint32_t* g_featureLevel = nullptr;
+
+uint32_t* g_showEngineConsole = nullptr;
+bool* g_bEngineConsoleEnabled = nullptr;
+uint32_t* g_engineConsoleVisLevel = nullptr;
+
 DH2::idCmdSystemLocal* g_idCmdSystemLocal = nullptr;
 DH2::idPrintListener** g_idPrintListeners = nullptr;
 
@@ -24,10 +28,12 @@ namespace DH2
 		}
 
 		g_hWnd = *(HWND*)(MODULE_ADDR + 0x3137f40);
-		g_bDeveloperMode = (int*)(MODULE_ADDR + 0x32cd1c8);
-		g_consoleVisLevel = (int*)(MODULE_ADDR + 0x3135948);
-		g_showConsole = (int*)(MODULE_ADDR + 0x25ae9b8);
-		g_bConsoleEnabled = (bool*)(MODULE_ADDR + 0x32c7ee9);
+		g_bDeveloperMode = (uint32_t*)(MODULE_ADDR + 0x32cd1c8);
+		g_featureLevel = (uint32_t*)(MODULE_ADDR + 0x32c7ed4);
+
+		g_engineConsoleVisLevel = (uint32_t*)(MODULE_ADDR + 0x3135948);
+		g_showEngineConsole = (uint32_t*)(MODULE_ADDR + 0x25ae9b8);
+		g_bEngineConsoleEnabled = (bool*)(MODULE_ADDR + 0x32c7ee9);
 
 		g_idCmdSystemLocal = *(DH2::idCmdSystemLocal**)(MODULE_ADDR + 0x228bae0);
 		g_idPrintListeners = (DH2::idPrintListener**)(MODULE_ADDR + 0x32ccf98);
