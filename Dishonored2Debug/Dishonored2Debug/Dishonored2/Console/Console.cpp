@@ -1,5 +1,6 @@
 #include "Console.h"
 #include "../idPrintListener/idPrintListener.h"
+#include "../idConsole/idConsole.h"
 #include "../dh2Globals.h"
 #include "../DH2Call.h"
 

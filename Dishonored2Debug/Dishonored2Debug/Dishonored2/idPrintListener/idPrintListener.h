@@ -4,7 +4,7 @@ namespace DH2
 {
 	class idPrintListener
 	{
-		void** _vfptr;
+		void** _vfptr; // VTable pointer, not used directly
 		idPrintListener* m_next;
 
 	public:

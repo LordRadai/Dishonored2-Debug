@@ -17,10 +17,92 @@ namespace DH2hk
 		DH2::Console::oSys_ShowConsole_t pSys_ShowConsole = nullptr;
 		DH2::Console::oSys_ShowConsole_t pSys_ShowConsoleTarget = nullptr;
 
+		DH2::Console::oSys_PrintToConsoleWindow_t pSys_PrintToConsoleWindow = nullptr;
+		DH2::Console::oSys_PrintToConsoleWindow_t pSys_PrintToConsoleWindowTarget = nullptr;
+
         void __fastcall hkSys_ShowConsole(uint32_t visLevel, bool show)
         {
 			return pSys_ShowConsole(visLevel, true);
 		}
+
+        bool IsColorCode(const char* p)
+        {
+            if (p == NULL) {
+                return false;
+            }
+
+            // must start with a caret
+            if (p[0] != '^') {
+                return false;
+            }
+
+            // next character must be '0'..'9', ':' (10), ';' (11), '<' (12)
+            unsigned char next = (unsigned char)p[1];
+            if (next >= '0' && next <= '0' + 12) {
+                return true;
+            }
+
+            return false;
+        }
+
+        void hkSys_PrintToConsoleWindow(const char* msg)
+        {
+            char buffer[32760];
+            char* out = buffer;
+            size_t inPos = 0, outPos = 0;
+
+            // Clamp input if too long
+            int len = strlen(msg);
+            if (len > 0x3fff)
+            {
+                len = strlen(msg);
+                msg += (long long)len - 0x3fff;
+            }
+
+            while (msg[inPos] != '\0' && outPos < 0x7fff)
+            {
+                char c = msg[inPos];
+
+                if (c == '\n' && msg[inPos + 1] == '\r')
+                {
+                    *out++ = '\r'; *out++ = '\n';
+                    outPos += 2;
+                    inPos++; // skip extra \r
+                }
+                else if (c == '\r' || c == '\n')
+                {
+                    *out++ = '\r'; *out++ = '\n';
+                    outPos += 2;
+                }
+                else if (IsColorCode(&msg[inPos]))
+                {
+                    // skip "^<digit>" formatting code
+                    inPos++;
+                }
+                else
+                {
+                    *out++ = c;
+                    outPos++;
+                }
+
+                inPos++;
+            }
+
+            *out = '\0';
+
+            DWORD_PTR result;
+
+            *g_consoleTextBufferSize += (int)(out - buffer);
+            if (*g_consoleTextBufferSize > 0x7000)
+            {
+                SendMessageTimeoutA(*g_voidEngineConsoleEditHwnd, EM_SETSEL, 0, -1, SMTO_ABORTIFHUNG, 100, &result);
+                *g_consoleTextBufferSize = (int)(out - buffer);
+            }
+
+            SendMessageTimeoutA(*g_voidEngineConsoleEditHwnd, EM_LINESCROLL, 0, 0xFFFF, SMTO_ABORTIFHUNG, 100, &result);           // set selection to end
+            SendMessageTimeoutA(*g_voidEngineConsoleEditHwnd, EM_SCROLLCARET, 0, 0, SMTO_ABORTIFHUNG, 100, &result);                // replace selection
+            SendMessageTimeoutA(*g_voidEngineConsoleEditHwnd, EM_REPLACESEL, 0, (LPARAM)buffer, SMTO_ABORTIFHUNG, 100, &result);   // insert text
+        }
 
         std::string ConvertD2ConsoleMessageToStandardFmt(const char* input)
         {
@@ -85,16 +167,23 @@ namespace DH2hk
 
         void hkDebugConsoleOutput(const char* message, ...)
         {
-			constexpr size_t bufferSize = 256;
+            constexpr size_t bufferSize = 256;
 
-			char buffer[bufferSize];
-            va_list args; 
+            char buffer[bufferSize];
+            va_list args;
             va_start(args, message);
             vsnprintf(buffer, bufferSize, message, args);
             va_end(args);
 
             if (g_idConsoleLocal)
+            {
+                DH2::idPrintListener* pConPrint = g_idConsoleLocal->Next();
+
+                if (pConPrint)
+                    pConPrint->Print(buffer);
+
                 g_idConsoleLocal->Print(buffer);
+            }
 
             OutputDebugStringA(ConvertD2ConsoleMessageToStripped(buffer).c_str());
 
@@ -117,7 +206,6 @@ namespace DH2hk
 		}
 	}
 
-
 	namespace idMainThread
 	{
 		DH2::idMainThread::oInitialize_t pInitialize = nullptr;
@@ -128,7 +216,7 @@ namespace DH2hk
 			*g_bDeveloperMode = TRUE;
 			
 			*g_showEngineConsole = FALSE;
-			*g_engineConsoleVisLevel = EngineConsoleVisLevel::CON_HIDDEN;
+			*g_engineConsoleVisLevel = EngineConsoleVisLevel::CON_NORMAL;
 
 			// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes when issuing the listCvars -type command.
 			*(char**)(MODULE_ADDR + 0x22aba68) = nullptr;
@@ -144,7 +232,8 @@ bool DH2Hooks::InitializeHooks()
 
 	HookManager::CreateHook(MODULE_ADDR+0x166ad0, &DH2hk::idMainThread::pInitializeTarget, &DH2hk::idMainThread::hkInitialize, &DH2hk::idMainThread::pInitialize, "idMainThread::Initialize");
 	HookManager::CreateHook(MODULE_ADDR+0x166830, &DH2hk::Console::pConsoleOutputTarget, DH2hk::Console::hkDebugConsoleOutput, &DH2hk::Console::pConsoleOutput, "ConsoleOutput");
-	//HookManager::CreateHook(MODULE_ADDR+0xe9a80, &DH2hk::Console::pSys_ShowConsoleTarget, DH2hk::Console::hkSys_ShowConsole, &DH2hk::Console::pSys_ShowConsole, "Sys_ShowConsole");
+	HookManager::CreateHook(MODULE_ADDR+0xe9a80, &DH2hk::Console::pSys_ShowConsoleTarget, DH2hk::Console::hkSys_ShowConsole, &DH2hk::Console::pSys_ShowConsole, "Sys_ShowConsole");
+	HookManager::CreateHook(MODULE_ADDR+0xe8d50, &DH2hk::Console::pSys_PrintToConsoleWindowTarget, DH2hk::Console::hkSys_PrintToConsoleWindow, &DH2hk::Console::pSys_PrintToConsoleWindow, "Sys_PrintToConsoleWindow");
 
 	return true;
 }
@@ -154,5 +243,6 @@ void DH2Hooks::FinalizeHooks()
 	HookManager::RemoveHook(&DH2::idCommonLocal::GetVTableAddr()[1], "idCommonLocal::Init");
 	HookManager::RemoveHook(&DH2hk::idMainThread::pInitializeTarget, "idMainThread::Initialize");
 	HookManager::RemoveHook(&DH2hk::Console::pConsoleOutputTarget, "ConsoleOutput");
-	//HookManager::RemoveHook(&DH2hk::Console::pSys_ShowConsoleTarget, "Sys_ShowConsole");
+	HookManager::RemoveHook(&DH2hk::Console::pSys_ShowConsoleTarget, "Sys_ShowConsole");
+	HookManager::RemoveHook(&DH2hk::Console::pSys_PrintToConsoleWindowTarget, "Sys_PrintToConsoleWindow");
 }
