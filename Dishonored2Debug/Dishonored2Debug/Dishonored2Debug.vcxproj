@@ -130,7 +130,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -150,25 +150,10 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d11.lib</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Console\Console.h" />
-    <ClInclude Include="Console\ImGuiConsole\ImGuiConsoleImpl.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\api.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\arguments.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\argument_parser.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\autocomplete.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\command.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\csys.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\exceptions.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\history.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\item.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\script.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\string.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\csys\system.h" />
-    <ClInclude Include="Console\ImGuiConsole\imgui_console\imgui_console.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\api.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\arguments.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\argument_parser.h" />
@@ -182,22 +167,14 @@
     <ClInclude Include="Console\ImGuiConsole\include\csys\string.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\system.h" />
     <ClInclude Include="Dishonored2\idCommonLocal\idCommonLocal.h" />
-    <ClInclude Include="Dishonored2\idConsoleLocal\idConsoleLocal.h" />
+    <ClInclude Include="Dishonored2\Console\Console.h" />
     <ClInclude Include="Dishonored2\DH2Call.h" />
     <ClInclude Include="Dishonored2\dh2Globals.h" />
     <ClInclude Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.h" />
     <ClInclude Include="Dishonored2\idMainThread\idMainThread.h" />
-    <ClInclude Include="extern.h" />
+    <ClInclude Include="Dishonored2\idPrintListener\idPrintListener.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Hooks\DH2Hooks.h" />
-    <ClInclude Include="imgui\imconfig.h" />
-    <ClInclude Include="imgui\imgui.h" />
-    <ClInclude Include="imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="imgui\imgui_impl_win32.h" />
-    <ClInclude Include="imgui\imgui_internal.h" />
-    <ClInclude Include="imgui\imstb_rectpack.h" />
-    <ClInclude Include="imgui\imstb_textedit.h" />
-    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="kiero\kiero.h" />
     <ClInclude Include="kiero\minhook\include\MinHook.h" />
     <ClInclude Include="kiero\minhook\src\buffer.h" />
@@ -209,22 +186,14 @@
     <ClInclude Include="kiero\minhook\src\trampoline.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Console\ImGuiConsole\ImGuiConsoleImpl.cpp" />
-    <ClCompile Include="Console\ImGuiConsole\imgui_console\imgui_console.cpp" />
     <ClCompile Include="Dishonored2\dh2Globals.cpp" />
     <ClCompile Include="Dishonored2\idCommonLocal\idCommonLocal.cpp" />
-    <ClCompile Include="Dishonored2\idConsoleLocal\idConsoleLocal.cpp" />
+    <ClCompile Include="Dishonored2\Console\Console.cpp" />
     <ClCompile Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.cpp" />
     <ClCompile Include="Dishonored2\idMainThread\idMainThread.cpp" />
+    <ClCompile Include="Dishonored2\idPrintListener\idPrintListener.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hooks\DH2Hooks.cpp" />
-    <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
-    <ClCompile Include="imgui\imgui_draw.cpp" />
-    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
-    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="imgui\imgui_tables.cpp" />
-    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />
     <ClCompile Include="kiero\minhook\src\buffer.c" />
     <ClCompile Include="kiero\minhook\src\hde\hde32.c" />
@@ -233,11 +202,6 @@
     <ClCompile Include="kiero\minhook\src\trampoline.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Console\ImGuiConsole\imgui_console\csys\autocomplete.inl" />
-    <None Include="Console\ImGuiConsole\imgui_console\csys\history.inl" />
-    <None Include="Console\ImGuiConsole\imgui_console\csys\item.inl" />
-    <None Include="Console\ImGuiConsole\imgui_console\csys\script.inl" />
-    <None Include="Console\ImGuiConsole\imgui_console\csys\system.inl" />
     <None Include="Console\ImGuiConsole\include\csys\autocomplete.inl" />
     <None Include="Console\ImGuiConsole\include\csys\history.inl" />
     <None Include="Console\ImGuiConsole\include\csys\item.inl" />
