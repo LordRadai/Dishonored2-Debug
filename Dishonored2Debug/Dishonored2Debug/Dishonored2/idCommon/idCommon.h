@@ -5,10 +5,13 @@
 
 namespace DH2
 {
-	class idCommonLocal
+	class idCommon
 	{
 		void** _vfptr;
+	};
 
+	class idCommonLocal : public idCommon
+	{
 	public:
 		typedef void(_fastcall* oInit_t)(idCommonLocal* self, int param2, uint64_t param3, char* commandLine);
 

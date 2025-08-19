@@ -1,5 +1,5 @@
 #include <string>
-#include "idCmdSystemLocal.h"
+#include "idCmdSystem.h"
 #include "../DH2Call.h"
 
 namespace DH2

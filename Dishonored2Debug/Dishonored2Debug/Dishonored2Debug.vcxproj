@@ -231,13 +231,15 @@
     <ClInclude Include="Console\ImGuiConsole\include\csys\script.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\string.h" />
     <ClInclude Include="Console\ImGuiConsole\include\csys\system.h" />
-    <ClInclude Include="Dishonored2\idCommonLocal\idCommonLocal.h" />
+    <ClInclude Include="Dishonored2\idCommon\idCommon.h" />
     <ClInclude Include="Dishonored2\Console\Console.h" />
     <ClInclude Include="Dishonored2\DH2Call.h" />
     <ClInclude Include="Dishonored2\dh2Globals.h" />
-    <ClInclude Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.h" />
+    <ClInclude Include="Dishonored2\idCmdSystem\idCmdSystem.h" />
+    <ClInclude Include="Dishonored2\idConsole\idConsole.h" />
     <ClInclude Include="Dishonored2\idMainThread\idMainThread.h" />
     <ClInclude Include="Dishonored2\idPrintListener\idPrintListener.h" />
+    <ClInclude Include="Dishonored2\idStr\idStr.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Hooks\DH2Hooks.h" />
     <ClInclude Include="kiero\kiero.h" />
@@ -252,11 +254,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Dishonored2\dh2Globals.cpp" />
-    <ClCompile Include="Dishonored2\idCommonLocal\idCommonLocal.cpp" />
+    <ClCompile Include="Dishonored2\idCommon\idCommon.cpp" />
     <ClCompile Include="Dishonored2\Console\Console.cpp" />
-    <ClCompile Include="Dishonored2\idCmdSystemLocal\idCmdSystemLocal.cpp" />
+    <ClCompile Include="Dishonored2\idCmdSystem\idCmdSystem.cpp" />
+    <ClCompile Include="Dishonored2\idConsole\idConsole.cpp" />
     <ClCompile Include="Dishonored2\idMainThread\idMainThread.cpp" />
     <ClCompile Include="Dishonored2\idPrintListener\idPrintListener.cpp" />
+    <ClCompile Include="Dishonored2\idStr\idStr.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Hooks\DH2Hooks.cpp" />
     <ClCompile Include="kiero\kiero.cpp" />

@@ -1,34 +1,41 @@
 #include "DH2Hooks.h"
 #include "Dishonored2/idPrintListener/idPrintListener.h"
-#include "Dishonored2/idCommonLocal/idCommonLocal.h"
-#include "Dishonored2/idCmdSystemLocal/idCmdSystemLocal.h"
+#include "Dishonored2/idCommon/idCommon.h"
+#include "Dishonored2/idCmdSystem/idCmdSystem.h"
+#include "Dishonored2/idConsole/idConsole.h"
 #include "Dishonored2/Console/Console.h"
 #include "Dishonored2/idMainThread/idMainThread.h"
 #include "Dishonored2/dh2Globals.h"
 
 namespace DH2hk
 {
-	namespace Console
-	{
-		typedef void(_fastcall* oConsoleOutput_t)(const char* message, ...);
+    namespace Console
+    {
+        DH2::Console::oConsoleOutput_t pConsoleOutput = nullptr;
+        DH2::Console::oConsoleOutput_t pConsoleOutputTarget = nullptr;
 
-		oConsoleOutput_t pConsoleOutput = nullptr;
-		oConsoleOutput_t pConsoleOutputTarget = nullptr;
+		DH2::Console::oSys_ShowConsole_t pSys_ShowConsole = nullptr;
+		DH2::Console::oSys_ShowConsole_t pSys_ShowConsoleTarget = nullptr;
+
+        void __fastcall hkSys_ShowConsole(uint32_t visLevel, bool show)
+        {
+			return pSys_ShowConsole(visLevel, true);
+		}
 
         std::string ConvertD2ConsoleMessageToStandardFmt(const char* input)
         {
             if (!input) return "";
 
             static const std::unordered_map<char, const char*> colorMap = {
-                {'0', "\033[30m"}, 
-                {'1', "\033[31m"}, 
+                {'0', "\033[30m"},
+                {'1', "\033[31m"},
                 {'2', "\033[32m"},
-                {'3', "\033[33m"}, 
-                {'4', "\033[34m"}, 
+                {'3', "\033[33m"},
+                {'4', "\033[34m"},
                 {'5', "\033[35m"},
-                {'6', "\033[36m"}, 
-                {'7', "\033[37m"}, 
-                {'8', "\033[90m"}, 
+                {'6', "\033[36m"},
+                {'7', "\033[37m"},
+                {'8', "\033[90m"},
                 {'9', "\033[91m"}
             };
 
@@ -78,32 +85,25 @@ namespace DH2hk
 
         void hkDebugConsoleOutput(const char* message, ...)
         {
-            char buffer[1024];
+			constexpr size_t bufferSize = 256;
 
-            va_list args;
+			char buffer[bufferSize];
+            va_list args; 
             va_start(args, message);
-            vsnprintf(buffer, sizeof(buffer), message, args);
+            vsnprintf(buffer, bufferSize, message, args);
             va_end(args);
 
-            /*
-            if (g_idPrintListeners)
-            {
-                DH2::idPrintListener* listener = *g_idPrintListeners;
+            if (g_idConsoleLocal)
+                g_idConsoleLocal->Print(buffer);
 
-                while (listener != nullptr)
-                {
-                    listener->Print(ConvertD2ConsoleMessageToStripped(buffer).c_str());
-                    listener = listener->Next();
-                }
-            }
-            */
+            OutputDebugStringA(ConvertD2ConsoleMessageToStripped(buffer).c_str());
 
-#ifdef _CONSOLE
-			printf_s("%s", ConvertD2ConsoleMessageToStandardFmt(buffer).c_str());
+#ifdef _CONSOLE 
+            printf_s("%s", ConvertD2ConsoleMessageToStandardFmt(buffer).c_str());
             fflush(stdout);
 #endif
         }
-	}
+    }
 
 	namespace idCommonLocal
 	{
@@ -111,11 +111,12 @@ namespace DH2hk
 
 		void __fastcall hkInit(DH2::idCommonLocal* self, int param2, uint64_t param3, char* commandLine)
 		{
-			//DH2::Console::Sys_ShowConsole(*g_engineConsoleVisLevel, true);
+			DH2::Console::Sys_ShowConsole(*g_engineConsoleVisLevel, true);
 
 			pInit(self, param2, param3, commandLine);
 		}
 	}
+
 
 	namespace idMainThread
 	{
@@ -126,10 +127,8 @@ namespace DH2hk
 		{
 			*g_bDeveloperMode = TRUE;
 			
-#ifndef _CONSOLE
 			*g_showEngineConsole = FALSE;
-			*g_engineConsoleVisLevel = EngineConsoleVisLevel::kHidden;
-#endif
+			*g_engineConsoleVisLevel = EngineConsoleVisLevel::CON_HIDDEN;
 
 			// The game has a terribly unsafe thing, a string element in a string array that has a null pointer (0x1). We set it to nullptr to avoid crashes when issuing the listCvars -type command.
 			*(char**)(MODULE_ADDR + 0x22aba68) = nullptr;
@@ -145,6 +144,7 @@ bool DH2Hooks::InitializeHooks()
 
 	HookManager::CreateHook(MODULE_ADDR+0x166ad0, &DH2hk::idMainThread::pInitializeTarget, &DH2hk::idMainThread::hkInitialize, &DH2hk::idMainThread::pInitialize, "idMainThread::Initialize");
 	HookManager::CreateHook(MODULE_ADDR+0x166830, &DH2hk::Console::pConsoleOutputTarget, DH2hk::Console::hkDebugConsoleOutput, &DH2hk::Console::pConsoleOutput, "ConsoleOutput");
+	//HookManager::CreateHook(MODULE_ADDR+0xe9a80, &DH2hk::Console::pSys_ShowConsoleTarget, DH2hk::Console::hkSys_ShowConsole, &DH2hk::Console::pSys_ShowConsole, "Sys_ShowConsole");
 
 	return true;
 }
@@ -154,4 +154,5 @@ void DH2Hooks::FinalizeHooks()
 	HookManager::RemoveHook(&DH2::idCommonLocal::GetVTableAddr()[1], "idCommonLocal::Init");
 	HookManager::RemoveHook(&DH2hk::idMainThread::pInitializeTarget, "idMainThread::Initialize");
 	HookManager::RemoveHook(&DH2hk::Console::pConsoleOutputTarget, "ConsoleOutput");
+	//HookManager::RemoveHook(&DH2hk::Console::pSys_ShowConsoleTarget, "Sys_ShowConsole");
 }

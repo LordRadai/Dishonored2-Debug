@@ -6,7 +6,9 @@
 
 namespace DH2
 {
+	class idCommonLocal;
 	class idCmdSystemLocal;
+	class idConsoleLocal;
 	class idPrintListener;
 
 	/**
@@ -23,10 +25,10 @@ extern bool* g_bEngineConsoleEnabled;
 
 enum EngineConsoleVisLevel : uint32_t
 {
-	kHidden,
-	kNormal,
-	kMinimized,
-	kWinConsole
+	CON_HIDDEN,
+	CON_NORMAL,
+	CON_MINIMIZED,
+	CON_CONSOLE_WINDOW
 };
 
 extern uint32_t* g_engineConsoleVisLevel;
@@ -35,3 +37,5 @@ extern uint32_t* g_featureLevel;
 
 extern DH2::idCmdSystemLocal* g_idCmdSystemLocal;
 extern DH2::idPrintListener** g_idPrintListeners;
+extern DH2::idCommonLocal* g_idCommonLocal;
+extern DH2::idConsoleLocal* g_idConsoleLocal;

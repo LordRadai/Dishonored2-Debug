@@ -3,7 +3,12 @@
 
 namespace DH2
 {
-	class idCmdSystemLocal
+	class idCmdSystem
+	{
+		void** _vfptr;
+	};
+
+	class idCmdSystemLocal : public idCmdSystem
 	{
 		struct Command
 		{
@@ -14,7 +19,6 @@ namespace DH2
 			char* pDescription;
 		};
 
-		void** _vfptr;
 		Command* m_pCommandList;
 		uint32_t m_iVar10;
 		uint32_t m_iVar14;

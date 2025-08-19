@@ -8,7 +8,7 @@ namespace DH2
 		idPrintListener* m_next;
 
 	public:
-		void Print(const char* fmt);
+		void Print(char* message);
 
 		idPrintListener* Next() const { return m_next; }
 	};

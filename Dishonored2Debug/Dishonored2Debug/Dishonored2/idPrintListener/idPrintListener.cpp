@@ -3,10 +3,10 @@
 
 namespace DH2
 {
-	typedef void(_fastcall* oPrint_t)(idPrintListener* self, const char* fmt);
+	typedef void(_fastcall* oPrint_t)(idPrintListener*, char*);
 
-	void idPrintListener::Print(const char* fmt)
+	void idPrintListener::Print(char* message)
 	{
-		DH2_VCALL(this, 1, oPrint_t, this, fmt);
+		DH2_VCALL(this, 1, oPrint_t, this, message);
 	}
 }
