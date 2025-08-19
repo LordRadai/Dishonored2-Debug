@@ -44,9 +44,6 @@ namespace DH2hk
                 output += input[i];
             }
 
-            if (output.empty() || output.back() != '\n')
-                output += '\n';
-
             return output;
         }
 
@@ -66,9 +63,6 @@ namespace DH2hk
 
                 output += input[i];
             }
-
-            if (output.empty() || output.back() != '\n')
-                output += '\n';
 
             return output;
         }
