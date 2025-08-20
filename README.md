@@ -5,6 +5,7 @@ Drag and drop DINPUT8.dll inside the `Dishonored2` folder (where `Dishonored2.ex
 Certain features look like they have been disabled. Godmode, infinite coin, debug drawing mostly do not seem to work. I might be missing something, maybe changing a 0 to a 1 will make them work, it needs investigating.
 
 ## Command list
+```
 addarrow - adds a debug arrow
 addClamp - adds to a cvar, with clamping
 addline - adds a debug line
@@ -118,6 +119,7 @@ writeConfig - writes a config file
 writeEntitiesFile - writes out a production build .entities file for the specified map
 writeEntitiesFileWithError - writes out a production build .entities file for the specified map
 writeImage - Writes a tga for a given image
+```
 
-Cvar list
+## Cvar list
 see cvars.md
