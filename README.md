@@ -122,4 +122,4 @@ writeImage - Writes a tga for a given image
 ```
 
 ## Cvar list
-see cvars.md
+see [cvars.md](cvars.md)
