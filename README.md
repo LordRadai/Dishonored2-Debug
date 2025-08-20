@@ -4,6 +4,13 @@ Drag and drop DINPUT8.dll inside the `Dishonored2` folder (where `Dishonored2.ex
 ## Things to note
 Certain features look like they have been disabled. Godmode, infinite coin, debug drawing mostly do not seem to work. I might be missing something, maybe changing a 0 to a 1 will make them work, it needs investigating.
 
+## Cvars
+See [cvars.md](cvars.md) for a complete list of modifiable cvars.
+
+Cvars can be changed via console command. Use this syntax without the brackets: `<cvar_name_here> <cvar_value_here>`
+
+Changes to cvars can be made permanent by adding them to `%USERPROFILE%\Saved Games\Arkane Studios\Dishonored2\base\dishonored2Config.cfg`.
+
 ## Command list
 ```
 addarrow - adds a debug arrow
@@ -120,6 +127,3 @@ writeEntitiesFile - writes out a production build .entities file for the specifi
 writeEntitiesFileWithError - writes out a production build .entities file for the specified map
 writeImage - Writes a tga for a given image
 ```
-
-## Cvar list
-see [cvars.md](cvars.md)
